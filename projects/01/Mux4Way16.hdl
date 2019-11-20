@@ -17,4 +17,344 @@ CHIP Mux4Way16 {
 
     PARTS:
     // Put your code here:
+    Not (in=sel[1], out=notmsb);
+    Not (in=sel[0], out=notlsb);
+    
+    //0
+    And (a=a[0], b=notmsb, out=amsb0);
+    And (a=a[0], b=notlsb, out=alsb0);
+    And (a=amsb0, b=alsb0, out=ab0);
+
+    And (a=b[0], b=notmsb, out=bmsb0);
+    And (a=b[0], b=sel[0], out=blsb0);
+    And (a=bmsb0, b=blsb0, out= bb0);
+
+    And (a=c[0], b=sel[1], out=cmsb0);
+    And (a=c[0], b=notlsb, out=clsb0);
+    And (a=cmsb0, b=clsb0, out=cb0);
+
+    And (a=d[0], b=sel[1], out=dmsb0);
+    And (a=d[0], b=sel[0], out=dlsb0);
+    And (a=dmsb0, b=dlsb0, out=db0);
+
+    Or (a=ab0, b=bb0, out= aorb0);
+    Or (a=cb0, b=db0, out= cord0);
+
+    //1
+    And (a=a[1], b=notmsb, out=amsb1);
+    And (a=a[1], b=notlsb, out=alsb1);
+    And (a=amsb1, b=alsb1, out=ab1);
+
+    And (a=b[1], b=notmsb, out=bmsb1);
+    And (a=b[1], b=sel[0], out=blsb1);
+    And (a=bmsb1, b=blsb1, out= bb1);
+
+    And (a=c[1], b=sel[1], out=cmsb1);
+    And (a=c[1], b=notlsb, out=clsb1);
+    And (a=cmsb1, b=clsb1, out=cb1);
+
+    And (a=d[1], b=sel[1], out=dmsb1);
+    And (a=d[1], b=sel[0], out=dlsb1);
+    And (a=dmsb1, b=dlsb1, out=db1);
+
+    Or (a=ab1, b=bb1, out= aorb1);
+    Or (a=cb1, b=db1, out= cord1);
+
+    //2
+    And (a=a[2], b=notmsb, out=amsb2);
+    And (a=a[2], b=notlsb, out=alsb2);
+    And (a=amsb2, b=alsb2, out=ab2);
+
+    And (a=b[2], b=notmsb, out=bmsb2);
+    And (a=b[2], b=sel[0], out=blsb2);
+    And (a=bmsb2, b=blsb2, out= bb2);
+
+    And (a=c[2], b=sel[1], out=cmsb2);
+    And (a=c[2], b=notlsb, out=clsb2);
+    And (a=cmsb2, b=clsb2, out=cb2);
+
+    And (a=d[2], b=sel[1], out=dmsb2);
+    And (a=d[2], b=sel[0], out=dlsb2);
+    And (a=dmsb2, b=dlsb2, out=db2);
+
+    Or (a=ab2, b=bb2, out= aorb2);
+    Or (a=cb2, b=db2, out= cord2);
+
+    //3
+    And (a=a[3], b=notmsb, out=amsb3);
+    And (a=a[3], b=notlsb, out=alsb3);
+    And (a=amsb3, b=alsb3, out=ab3);
+
+    And (a=b[3], b=notmsb, out=bmsb3);
+    And (a=b[3], b=sel[0], out=blsb3);
+    And (a=bmsb3, b=blsb3, out= bb3);
+
+    And (a=c[3], b=sel[1], out=cmsb3);
+    And (a=c[3], b=notlsb, out=clsb3);
+    And (a=cmsb3, b=clsb3, out=cb3);
+
+    And (a=d[3], b=sel[1], out=dmsb3);
+    And (a=d[3], b=sel[0], out=dlsb3);
+    And (a=dmsb3, b=dlsb3, out=db3);
+
+    Or (a=ab3, b=bb3, out= aorb3);
+    Or (a=cb3, b=db3, out= cord3);
+
+    //4
+    And (a=a[4], b=notmsb, out=amsb4);
+    And (a=a[4], b=notlsb, out=alsb4);
+    And (a=amsb4, b=alsb4, out=ab4);
+
+    And (a=b[4], b=notmsb, out=bmsb4);
+    And (a=b[4], b=sel[0], out=blsb4);
+    And (a=bmsb4, b=blsb4, out= bb4);
+
+    And (a=c[4], b=sel[1], out=cmsb4);
+    And (a=c[4], b=notlsb, out=clsb4);
+    And (a=cmsb4, b=clsb4, out=cb4);
+
+    And (a=d[4], b=sel[1], out=dmsb4);
+    And (a=d[4], b=sel[0], out=dlsb4);
+    And (a=dmsb4, b=dlsb4, out=db4);
+
+    Or (a=ab4, b=bb4, out= aorb4);
+    Or (a=cb4, b=db4, out= cord4);
+
+    //5
+    And (a=a[5], b=notmsb, out=amsb5);
+    And (a=a[5], b=notlsb, out=alsb5);
+    And (a=amsb5, b=alsb5, out=ab5);
+
+    And (a=b[5], b=notmsb, out=bmsb5);
+    And (a=b[5], b=sel[0], out=blsb5);
+    And (a=bmsb5, b=blsb5, out= bb5);
+
+    And (a=c[5], b=sel[1], out=cmsb5);
+    And (a=c[5], b=notlsb, out=clsb5);
+    And (a=cmsb5, b=clsb5, out=cb5);
+
+    And (a=d[5], b=sel[1], out=dmsb5);
+    And (a=d[5], b=sel[0], out=dlsb5);
+    And (a=dmsb5, b=dlsb5, out=db5);
+
+    Or (a=ab5, b=bb5, out= aorb5);
+    Or (a=cb5, b=db5, out= cord5);
+
+    //6
+    And (a=a[6], b=notmsb, out=amsb6);
+    And (a=a[6], b=notlsb, out=alsb6);
+    And (a=amsb6, b=alsb6, out=ab6);
+
+    And (a=b[6], b=notmsb, out=bmsb6);
+    And (a=b[6], b=sel[0], out=blsb6);
+    And (a=bmsb6, b=blsb6, out= bb6);
+
+    And (a=c[6], b=sel[1], out=cmsb6);
+    And (a=c[6], b=notlsb, out=clsb6);
+    And (a=cmsb6, b=clsb6, out=cb6);
+
+    And (a=d[6], b=sel[1], out=dmsb6);
+    And (a=d[6], b=sel[0], out=dlsb6);
+    And (a=dmsb6, b=dlsb6, out=db6);
+
+    Or (a=ab6, b=bb6, out= aorb6);
+    Or (a=cb6, b=db6, out= cord6);
+
+    //7
+    And (a=a[7], b=notmsb, out=amsb7);
+    And (a=a[7], b=notlsb, out=alsb7);
+    And (a=amsb7, b=alsb7, out=ab7);
+
+    And (a=b[7], b=notmsb, out=bmsb7);
+    And (a=b[7], b=sel[0], out=blsb7);
+    And (a=bmsb7, b=blsb7, out= bb7);
+
+    And (a=c[7], b=sel[1], out=cmsb7);
+    And (a=c[7], b=notlsb, out=clsb7);
+    And (a=cmsb7, b=clsb7, out=cb7);
+
+    And (a=d[7], b=sel[1], out=dmsb7);
+    And (a=d[7], b=sel[0], out=dlsb7);
+    And (a=dmsb7, b=dlsb7, out=db7);
+
+    Or (a=ab7, b=bb7, out= aorb7);
+    Or (a=cb7, b=db7, out= cord7);
+
+    //8
+    And (a=a[8], b=notmsb, out=amsb8);
+    And (a=a[8], b=notlsb, out=alsb8);
+    And (a=amsb8, b=alsb8, out=ab8);
+
+    And (a=b[8], b=notmsb, out=bmsb8);
+    And (a=b[8], b=sel[0], out=blsb8);
+    And (a=bmsb8, b=blsb8, out= bb8);
+
+    And (a=c[8], b=sel[1], out=cmsb8);
+    And (a=c[8], b=notlsb, out=clsb8);
+    And (a=cmsb8, b=clsb8, out=cb8);
+
+    And (a=d[8], b=sel[1], out=dmsb8);
+    And (a=d[8], b=sel[0], out=dlsb8);
+    And (a=dmsb8, b=dlsb8, out=db8);
+
+    Or (a=ab8, b=bb8, out= aorb8);
+    Or (a=cb8, b=db8, out= cord8);
+
+    //9
+    And (a=a[9], b=notmsb, out=amsb9);
+    And (a=a[9], b=notlsb, out=alsb9);
+    And (a=amsb9, b=alsb9, out=ab9);
+
+    And (a=b[9], b=notmsb, out=bmsb9);
+    And (a=b[9], b=sel[0], out=blsb9);
+    And (a=bmsb9, b=blsb9, out= bb9);
+
+    And (a=c[9], b=sel[1], out=cmsb9);
+    And (a=c[9], b=notlsb, out=clsb9);
+    And (a=cmsb9, b=clsb9, out=cb9);
+
+    And (a=d[9], b=sel[1], out=dmsb9);
+    And (a=d[9], b=sel[0], out=dlsb9);
+    And (a=dmsb9, b=dlsb9, out=db9);
+
+    Or (a=ab9, b=bb9, out= aorb9);
+    Or (a=cb9, b=db9, out= cord9);
+
+    //10
+    And (a=a[10], b=notmsb, out=amsb10);
+    And (a=a[10], b=notlsb, out=alsb10);
+    And (a=amsb10, b=alsb10, out=ab10);
+
+    And (a=b[10], b=notmsb, out=bmsb10);
+    And (a=b[10], b=sel[0], out=blsb10);
+    And (a=bmsb10, b=blsb10, out= bb10);
+
+    And (a=c[10], b=sel[1], out=cmsb10);
+    And (a=c[10], b=notlsb, out=clsb10);
+    And (a=cmsb10, b=clsb10, out=cb10);
+
+    And (a=d[10], b=sel[1], out=dmsb10);
+    And (a=d[10], b=sel[0], out=dlsb10);
+    And (a=dmsb10, b=dlsb10, out=db10);
+
+    Or (a=ab10, b=bb10, out= aorb10);
+    Or (a=cb10, b=db10, out= cord10);
+
+    //11
+    And (a=a[11], b=notmsb, out=amsb11);
+    And (a=a[11], b=notlsb, out=alsb11);
+    And (a=amsb11, b=alsb11, out=ab11);
+
+    And (a=b[11], b=notmsb, out=bmsb11);
+    And (a=b[11], b=sel[0], out=blsb11);
+    And (a=bmsb11, b=blsb11, out= bb11);
+
+    And (a=c[11], b=sel[1], out=cmsb11);
+    And (a=c[11], b=notlsb, out=clsb11);
+    And (a=cmsb11, b=clsb11, out=cb11);
+
+    And (a=d[11], b=sel[1], out=dmsb11);
+    And (a=d[11], b=sel[0], out=dlsb11);
+    And (a=dmsb11, b=dlsb11, out=db11);
+
+    Or (a=ab11, b=bb11, out= aorb11);
+    Or (a=cb11, b=db11, out= cord11);
+
+    //12
+    And (a=a[12], b=notmsb, out=amsb12);
+    And (a=a[12], b=notlsb, out=alsb12);
+    And (a=amsb12, b=alsb12, out=ab12);
+
+    And (a=b[12], b=notmsb, out=bmsb12);
+    And (a=b[12], b=sel[0], out=blsb12);
+    And (a=bmsb12, b=blsb12, out= bb12);
+
+    And (a=c[12], b=sel[1], out=cmsb12);
+    And (a=c[12], b=notlsb, out=clsb12);
+    And (a=cmsb12, b=clsb12, out=cb12);
+
+    And (a=d[12], b=sel[1], out=dmsb12);
+    And (a=d[12], b=sel[0], out=dlsb12);
+    And (a=dmsb12, b=dlsb12, out=db12);
+
+    Or (a=ab12, b=bb12, out= aorb12);
+    Or (a=cb12, b=db12, out= cord12);
+
+    //13
+    And (a=a[13], b=notmsb, out=amsb13);
+    And (a=a[13], b=notlsb, out=alsb13);
+    And (a=amsb13, b=alsb13, out=ab13);
+
+    And (a=b[13], b=notmsb, out=bmsb13);
+    And (a=b[13], b=sel[0], out=blsb13);
+    And (a=bmsb13, b=blsb13, out= bb13);
+
+    And (a=c[13], b=sel[1], out=cmsb13);
+    And (a=c[13], b=notlsb, out=clsb13);
+    And (a=cmsb13, b=clsb13, out=cb13);
+
+    And (a=d[13], b=sel[1], out=dmsb13);
+    And (a=d[13], b=sel[0], out=dlsb13);
+    And (a=dmsb13, b=dlsb13, out=db13);
+
+    Or (a=ab13, b=bb13, out= aorb13);
+    Or (a=cb13, b=db13, out= cord13);
+
+    //14
+    And (a=a[14], b=notmsb, out=amsb14);
+    And (a=a[14], b=notlsb, out=alsb14);
+    And (a=amsb14, b=alsb14, out=ab14);
+
+    And (a=b[14], b=notmsb, out=bmsb14);
+    And (a=b[14], b=sel[0], out=blsb14);
+    And (a=bmsb14, b=blsb14, out= bb14);
+
+    And (a=c[14], b=sel[1], out=cmsb14);
+    And (a=c[14], b=notlsb, out=clsb14);
+    And (a=cmsb14, b=clsb14, out=cb14);
+
+    And (a=d[14], b=sel[1], out=dmsb14);
+    And (a=d[14], b=sel[0], out=dlsb14);
+    And (a=dmsb14, b=dlsb14, out=db14);
+
+    Or (a=ab14, b=bb14, out= aorb14);
+    Or (a=cb14, b=db14, out= cord14);
+
+    //15
+    And (a=a[15], b=notmsb, out=amsb15);
+    And (a=a[15], b=notlsb, out=alsb15);
+    And (a=amsb15, b=alsb15, out=ab15);
+
+    And (a=b[15], b=notmsb, out=bmsb15);
+    And (a=b[15], b=sel[0], out=blsb15);
+    And (a=bmsb15, b=blsb15, out= bb15);
+
+    And (a=c[15], b=sel[1], out=cmsb15);
+    And (a=c[15], b=notlsb, out=clsb15);
+    And (a=cmsb15, b=clsb15, out=cb15);
+
+    And (a=d[15], b=sel[1], out=dmsb15);
+    And (a=d[15], b=sel[0], out=dlsb15);
+    And (a=dmsb15, b=dlsb15, out=db15);
+
+    Or (a=ab15, b=bb15, out= aorb15);
+    Or (a=cb15, b=db15, out= cord15);
+
+    //OUT
+    Or (a=aorb0, b=cord0, out=out[0]);
+    Or (a=aorb1, b=cord1, out=out[1]);
+    Or (a=aorb2, b=cord2, out=out[2]);
+    Or (a=aorb3, b=cord3, out=out[3]);
+    Or (a=aorb4, b=cord4, out=out[4]);
+    Or (a=aorb5, b=cord5, out=out[5]);
+    Or (a=aorb6, b=cord6, out=out[6]);
+    Or (a=aorb7, b=cord7, out=out[7]);
+    Or (a=aorb8, b=cord8, out=out[8]);
+    Or (a=aorb9, b=cord9, out=out[9]);
+    Or (a=aorb10, b=cord10, out=out[10]);
+    Or (a=aorb11, b=cord11, out=out[11]);
+    Or (a=aorb12, b=cord12, out=out[12]);
+    Or (a=aorb13, b=cord13, out=out[13]);
+    Or (a=aorb14, b=cord14, out=out[14]);
+    Or (a=aorb15, b=cord15, out=out[15]);
 }
