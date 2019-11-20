@@ -19,4 +19,67 @@ CHIP Mux8Way16 {
 
     PARTS:
     // Put your code here:
+    Split16(in=sel[2], out=sel2, out=b2);
+    Split16(in=sel[1], out=sel1, out=b1);
+    Split16(in=sel[0], out=sel0, out=b0);
+
+    Not16 (in=sel2, out=notb2);
+    Not16 (in=sel1, out=notb1);
+    Not16 (in=sel0, out=notb0);
+
+    And16 (a=a, b=notb2, out=ab2);
+    And16 (a=a, b=notb1, out=ab1);
+    And16 (a=a, b=notb0, out=ab0);
+    And16 (a=ab1, b=ab0, out=ab01);
+    And16 (a=ab01, b=ab2, out=ab012);
+
+    And16 (a=b, b=notb2, out=bb2);
+    And16 (a=b, b=notb1, out=bb1);
+    And16 (a=b, b=b0, out=bb0);
+    And16 (a=bb1, b=bb0, out=bb01);
+    And16 (a=bb01, b=bb2, out=bb012);
+
+    And16 (a=c, b=notb2, out=cb2);
+    And16 (a=c, b=b1, out=cb1);
+    And16 (a=c, b=notb0, out=cb0);
+    And16 (a=cb1, b=cb0, out=cb01);
+    And16 (a=cb01, b=cb2, out=cb012);
+
+    And16 (a=d, b=notb2, out=db2);
+    And16 (a=d, b=b1, out=db1);
+    And16 (a=d, b=b0, out=db0);
+    And16 (a=db0, b=db1, out=db01);
+    And16 (a=db01, b=db2, out=db012);
+
+    And16 (a=e, b=b2, out=eb2);
+    And16 (a=e, b=notb1, out=eb1);
+    And16 (a=e, b=notb0, out=eb0);
+    And16 (a=eb1, b=eb0, out=eb01);
+    And16 (a=eb01, b=eb2, out=eb012);
+
+    And16 (a=f, b=b2, out=fb2);
+    And16 (a=f, b=notb1, out=fb1);
+    And16 (a=f, b=b0, out=fb0);
+    And16 (a=fb1, b=fb0, out=fb01);
+    And16 (a=fb01, b=fb2, out=fb012);    
+
+    And16 (a=g, b=b2, out=gb2);
+    And16 (a=g, b=b1, out=gb1);
+    And16 (a=g, b=notb0, out=gb0);
+    And16 (a=gb1, b=gb0, out=gb01);
+    And16 (a=gb01, b=gb2, out=gb012);
+
+    And16 (a=h, b=b2, out=hb2);
+    And16 (a=h, b=b1, out=hb1);
+    And16 (a=h, b=b0, out=hb0);
+    And16 (a=hb1, b=hb0, out=hb01);
+    And16 (a=hb01, b=hb2, out=hb012);
+
+    Or16(a=ab012, b=bb012, out=out1);
+    Or16(a=out1, b=cb012, out=out2);
+    Or16(a=out2, b=db012, out=out3);
+    Or16(a=out3, b=eb012, out=out4);
+    Or16(a=out4, b=fb012, out=out5);
+    Or16(a=out5, b=gb012, out=out6);
+    Or16(a=out6, b=hb012, out=out); 
 }
