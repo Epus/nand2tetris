@@ -1,9 +1,16 @@
+#Assembler for Hack language
+#Usage: python assembler.py directory\filename.asm
+#Output: directory\filename.hack
+
 import sys
+from enum import Enum
 
 NULL = "null"
-A_COMMAND = "A"
-C_COMMAND = "C"
-L_COMMAND = "L"
+
+class CommandType(Enum):
+    A_COMMAND = 1
+    C_COMMAND = 2
+    L_COMMAND = 3
 
 class SymbolTable():
     def __init__(self):
@@ -48,8 +55,13 @@ class SymbolTable():
 class Parser():
 
     def __init__(self):
-        self.raw =  open(sys.argv[1], 'r')
+        filepath = sys.argv[1]      
+        self.raw =  open(filepath, 'r')
+        self.output = open(filepath.split(".")[0] + ".hack", "w")
         self.reset()
+
+    def writeline(self, line):
+        self.output.write(line + "\n")    
 
     def __getNextCommand(self):
         command = ""
@@ -78,16 +90,16 @@ class Parser():
 
     def commandType(self):
         if (self.currentCommand[0] == "@"):
-            return A_COMMAND
+            return CommandType.A_COMMAND
         elif (self.currentCommand[0] == "("):
-            return L_COMMAND 
+            return CommandType.L_COMMAND 
         else:
-            return C_COMMAND    
+            return CommandType.C_COMMAND    
 
     def symbol(self):
-        if (self.commandType() == A_COMMAND):
+        if (self.commandType() == CommandType.A_COMMAND):
             return self.currentCommand.split("@")[1]
-        elif (self.commandType() == L_COMMAND):
+        elif (self.commandType() == CommandType.L_COMMAND):
             return self.currentCommand.split("(")[1].split(")")[0]   
 
     def dest(self, command):
@@ -107,6 +119,7 @@ class Parser():
             command = command.split(";")[0]
         return command
     
+    #for debugging
     def printcurrentcommand(self):
         print(self.currentCommand)
 
@@ -174,54 +187,45 @@ class Code():
     def jump(self, command):
         return self.jumpdist[command]
 
+st = SymbolTable()
+p = Parser()
+c = Code()
+pc = 0 #Program counter
+ram = 16
+
+def pass1():
+    global pc
+    while (p.hasMoreCommands()):
+        p.advance()
+        if (p.commandType() == CommandType.L_COMMAND):
+            st.addEntry(p.symbol(), pc)
+        elif (p.commandType() == CommandType.A_COMMAND or p.commandType() == CommandType.C_COMMAND):
+            pc = pc + 1  
+
+def pass2():
+    global ram
+    while (p.hasMoreCommands()):
+            p.advance()
+            translation = ""
+            if (p.commandType() == CommandType.A_COMMAND):
+                translation = "0"
+                if (p.symbol().isdigit() == False):
+                    if not st.contains(p.symbol()):
+                        st.addEntry(p.symbol(), ram)
+                        ram = ram + 1
+                    translation = translation + format(int(st.GetAddress(p.symbol())), "015b")
+                else:
+                    translation = translation + (format(int(p.symbol()), "015b"))    
+            elif (p.commandType() == CommandType.C_COMMAND):
+                translation = "111" + c.comp(p.comp(p.currentCommand)) + c.dest(p.dest(p.currentCommand)) + c.jump(p.jump(p.currentCommand))
+            else:
+                continue
+            p.writeline(translation)
+
 
 def main():
-    st = SymbolTable()
-    p = Parser()
-    c = Code()
-    pc = 0  #Program Counter
-    ram = 16
-    while (p.hasMoreCommands()):
-        p.advance()
-        # p.printcurrentcommand() 
-        # print(p.commandType())
-        if (p.commandType() == L_COMMAND):
-            # p.printcurrentcommand()
-            st.addEntry(p.symbol(), pc)
-        elif (p.commandType() == A_COMMAND or p.commandType() == C_COMMAND):
-            pc = pc + 1
-        
+    pass1()
     p.reset()
-    # st.printdict()
-    while (p.hasMoreCommands()):
-        p.advance()
-        translation = ""
-        # p.printcurrentcommand()
-        if (p.commandType() == A_COMMAND):
-            translation = "0"
-            if (p.symbol().isdigit() == False):
-                if not st.contains(p.symbol()):
-                    st.addEntry(p.symbol(), ram)
-                    ram = ram + 1
-                translation = translation + format(int(st.GetAddress(p.symbol())), "015b")
-            else:
-                translation = translation + (format(int(p.symbol()), "015b"))    
-        elif (p.commandType() == C_COMMAND):
-            translation = "111" + c.comp(p.comp(p.currentCommand)) + c.dest(p.dest(p.currentCommand)) + c.jump(p.jump(p.currentCommand))
-        else:
-            continue
-        print(translation)
+    pass2()    
     
-
-    # st.addEntry("var1")
-    # st.addEntry("var1", 15)
-    # st.printdict()
-    # print(p.comp("0;JMP"))
-    # print(p.comp("D=D-M"))
-    # print(p.comp("D=D+M;JMP"))
-    # print(c.comp("A-1"))
-    # print(c.comp("M-1"))
-    # print(c.dest("null"))
-    # print(c.jump("JMP"))       
-
 main()
