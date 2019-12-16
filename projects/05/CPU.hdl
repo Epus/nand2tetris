@@ -39,64 +39,29 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-
-    Not (in=instruction[15], out=Ainst);
-    Or (a=Ainst, b=instruction[5], out=c2);
-    And (a=instruction[15], b=instruction[4], out=c3);
-    And (a=instruction[15], b=instruction[12], out=c4);
-    And (a=instruction[15], b=instruction[3], out=c8);
-    And (a=instruction[15], b=jump, out=c5);
-
-
     // Put your code here:
     Mux16 (a=instruction, b=ALUout, sel=instruction[15], out=mux1 );
-    ARegister (in=mux1, load=c2, out=Areg, out[0..14]=addressM);
-    PC (in=Areg, load=c5, reset=reset, inc=true, out[0..14]=pc);
-    Mux16 (a=Areg, b=inM, sel=c4, out=mux2);
-    DRegister (in=ALUout, load=c3, out=Dreg);
-    ALU (x=Dreg, y=mux2, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=ALUout, zr=z, ng=n );
-    And (a=c8, b=true, out=writeM);
+    ARegister (in=mux1, load=isSaveToA, out=Areg, out[0..14]=addressM);
+    PC (in=Areg, load=shouldJump, reset=reset, inc=true, out[0..14]=pc);
+    Mux16 (a=Areg, b=inM, sel=useM, out=mux2);
+    DRegister (in=ALUout, load=isSaveToD, out=Dreg);
+    ALU (x=Dreg, y=mux2, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=ALUout, zr=zr, ng=ng );
+ 
+    //Control bits
+    Not (in=instruction[15], out=isAinst);
+    Or (a=isAinst, b=instruction[5], out=isSaveToA);
+    And (a=instruction[15], b=instruction[4], out=isSaveToD);
+    And (a=instruction[15], b=instruction[12], out=useM);
+    And (a=instruction[15], b=instruction[3], out=isSaveToM);
+    And (a=instruction[15], b=jb, out=shouldJump);
+    And (a=isSaveToM, b=true, out=writeM);
 
-    Not (in=instruction[0], out=nj3);
-    Not (in=instruction[1], out=nj2);
-    Not (in=instruction[2], out=nj1);
-    Not (in=z, out=nz);
-    Not (in=n, out=nn);
-    Or (a=z, b=nn, out=gte);
-    Or (a=z, b=n, out=lte);
-
-    //JGT
-    And (a=nj1, b=nj2, out=nj1nj2);
-    And (a=nj1nj2, b=instruction[0], out=nj1nj2j3);
-    And (a=nj1nj2j3, b=nz, out=jgtnz);
-    And (a=jgtnz, b=nn, out=jgt);
-
-    //JEQ
-    And (a=nj1, b=instruction[1], out=nj1j2);
-    And (a=nj1j2, b=nj3, out=nj1j2nj3);
-    And (a=nj1j2nj3, b=z, out=jeq);
-
-    //JGE
-    And (a=nj1j2, b=instruction[0], out=nj1j2j3);
-    And (a=nj1j2j3, b=gte, out=jge);
-
-    //JLT
-    And (a=instruction[2], b=nj2, out=j1nj2);
-    And (a=j1nj2, b=nj3, out=j1nj2nj3);
-    And (a=j1nj2nj3, b=nz, out=jltnz);
-    And (a=jltnz, b=n, out=jlt);
-
-    //JNE
-    And (a=j1nj2, b=instruction[0], out=j1nj2j3);
-    And (a=j1nj2j3, b=nz, out=jne);
-
-    //JLE
-    And (a=instruction[1], b=instruction[2], out=j1j2);
-    And (a=j1j2, b=nj3, out=j1j2nj3);
-    And (a=j1j2nj3, b=lte, out=jle);
-
-    //JMP 
-    And (a=j1j2, b=instruction[0], out=jmp);
-
-    Or8Way (in[0]=jgt, in[1]=jeq, in[2]=jge, in[3]=jlt, in[4]=jne, in[5]=jle, in[6]=jmp, in[7]=false, out=jump);
+    //Process Jump control bit
+    Or (a=ng, b=zr, out=ngorzr);
+    Not (in=ngorzr, out=ps);
+    And (a=instruction[2], b=ng, out=j1);
+    And (a=instruction[1], b=zr, out=j2);
+    And (a=instruction[0], b=ps, out=j3);
+    Or  (a=j1, b=j2, out=j1j2);
+    Or  (a=j1j2, b=j3, out=jb);
 }
