@@ -1,7 +1,7 @@
 #vmtranslator for Hack language
 #Usage: python vmtranslator.py directory\filename.vm
 #Output: directory\filename.asm
-
+DEBUG = 0
 import sys
 from enum import Enum
 
@@ -90,7 +90,7 @@ class Parser():
             return CommandType.C_ARITHMETIC
         elif (command_tokens[0] == "push"):
             return CommandType.C_PUSH 
-        elif (command_tokens[1] == "pop"):
+        elif (command_tokens[0] == "pop"):
             return CommandType.C_POP
         elif (self.currentCommand[0] == "("):
             return CommandType.C_LABEL
@@ -128,6 +128,7 @@ class Parser():
 class CodeWriter():
     def __init__(self, filepath):
         self.file = open(filepath, "w")
+        self.filename = filepath
         self.lines_to_write = []
         self.eq_counter = 0
         self.gt_counter = 0
@@ -140,7 +141,6 @@ class CodeWriter():
         print("New vm file being translated")
 
     def write_arithmetic(self, command):
-        print(command)
         if command == "add":
             self.__write("@SP\nM=M-1\nA=M\nD=M\nA=A-1\nM=D+M\n")
         elif command == "sub":
@@ -165,9 +165,44 @@ class CodeWriter():
 
     def write_pushpop(self, command, segment, index):
         if (command == CommandType.C_PUSH):
-            print(segment)
+            if (DEBUG):     #REMOVE LATER
+                self.__write("//%s %s %s\n" % (command, segment, index))
+
             if segment == "constant":
-                self.lines_to_write.append("@" + index + "\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n")
+                self.__write("@%s\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "local":
+                self.__write("@%s\nD=A\n@LCL\nA=D+M\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "argument":
+                self.__write("@%s\nD=A\n@ARG\nA=D+M\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "this":
+                self.__write("@%s\nD=A\n@THIS\nA=D+M\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "that":
+                self.__write("@%s\nD=A\n@THAT\nA=D+M\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "pointer":
+                self.__write("@%s\nD=A\n@3\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "temp":
+                self.__write("@%s\nD=A\n@5\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (index))
+            elif segment == "static":
+                self.__write("@%s.%s\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n" % (self.filename.split(".")[0].split("\\")[-1],index))
+            
+        elif (command == CommandType.C_POP):
+            if (DEBUG):     #REMOVE LATER
+                self.__write("//%s %s %s\n" % (command, segment, index))
+            if segment == "local":
+                self.__write("@%s\nD=A\n@LCL\nD=D+M\n@13\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D\n" % (index))
+            elif segment == "argument":
+                self.__write("@%s\nD=A\n@ARG\nD=D+M\n@13\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D\n" % (index))
+            elif segment == "this":
+                self.__write("@%s\nD=A\n@THIS\nD=D+M\n@13\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D\n" % (index))
+            elif segment == "that":
+                self.__write("@%s\nD=A\n@THAT\nD=D+M\n@13\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D\n" % (index))
+            elif segment == "pointer":
+                self.__write("@%s\nD=A\n@3\nD=D+A\n@13\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D\n" % (index))
+            elif segment == "temp":
+                self.__write("@%s\nD=A\n@5\nD=D+A\n@13\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@13\nA=M\nM=D\n" % (index))
+            elif segment == "static":
+                self.__write("@SP\nM=M-1\nA=M\nD=M\n@%s.%s\nM=D\n" % (self.filename.split(".")[0].split("\\")[-1], index))
+            
 
     def close(self):
         self.file.writelines(self.lines_to_write)
@@ -181,11 +216,9 @@ def main():
     code_writer = CodeWriter(filepath.split(".")[0] + ".asm")
     while(parser.hasMoreCommands()):
         parser.advance() 
-        print(parser.commandType())
         if (parser.commandType() == CommandType.C_ARITHMETIC):
             code_writer.write_arithmetic(parser.arg1())
         elif (parser.commandType() == CommandType.C_PUSH or parser.commandType() == CommandType.C_POP):
-            print("here")
             code_writer.write_pushpop(parser.commandType(), parser.arg1(), parser.arg2())
     code_writer.close()
 main()
