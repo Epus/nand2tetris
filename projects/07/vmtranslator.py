@@ -3,6 +3,7 @@
 #Output: directory\filename.asm
 DEBUG = 0
 import sys
+import os
 from enum import Enum
 
 NULL = "null"
@@ -126,19 +127,26 @@ class Parser():
         print(self.currentCommand)
 
 class CodeWriter():
-    def __init__(self, filepath):
+    # def __init__(self, filepath):
+    #     self.set_filename(filepath)
+    #     self.file = open(filepath, "w")
+    #     self.filename = filepath
+    #     self.lines_to_write = []
+    #     self.eq_counter = 0
+    #     self.gt_counter = 0
+    #     self.lt_counter = 0
+
+    def __write(self, string):
+        self.lines_to_write.append(string)
+
+    def set_filename(self, filepath):
         self.file = open(filepath, "w")
         self.filename = filepath
         self.lines_to_write = []
         self.eq_counter = 0
         self.gt_counter = 0
         self.lt_counter = 0
-
-    def __write(self, string):
-        self.lines_to_write.append(string)
-
-    def set_filename(self, filename):
-        print("New vm file being translated")
+        print("Translating to %s" % filepath)
 
     def write_arithmetic(self, command):
         if command == "add":
@@ -211,14 +219,26 @@ class CodeWriter():
 
 
 def main():
-    filepath = sys.argv[1]      
-    parser = Parser(filepath)
-    code_writer = CodeWriter(filepath.split(".")[0] + ".asm")
-    while(parser.hasMoreCommands()):
-        parser.advance() 
-        if (parser.commandType() == CommandType.C_ARITHMETIC):
-            code_writer.write_arithmetic(parser.arg1())
-        elif (parser.commandType() == CommandType.C_PUSH or parser.commandType() == CommandType.C_POP):
-            code_writer.write_pushpop(parser.commandType(), parser.arg1(), parser.arg2())
-    code_writer.close()
+    filepath = sys.argv[1]
+    files_to_translate = []   
+    if os.path.isfile(filepath):
+        if(filepath[-3:] != ".vm"):
+            print("File is not .vm file")
+        else:
+            files_to_translate.append(filepath)
+    elif os.path.isdir(filepath):
+        for filename in os.listdir(filepath):
+            if(".vm" in filename):
+                files_to_translate.append("%s\\%s" % (filepath, filename))
+    code_writer = CodeWriter()
+    for filename in files_to_translate:
+        parser = Parser(filename)
+        code_writer.set_filename("%s%s" % (filename.split(".")[0],".asm"))
+        while(parser.hasMoreCommands()):
+            parser.advance() 
+            if (parser.commandType() == CommandType.C_ARITHMETIC):
+                code_writer.write_arithmetic(parser.arg1())
+            elif (parser.commandType() == CommandType.C_PUSH or parser.commandType() == CommandType.C_POP):
+                code_writer.write_pushpop(parser.commandType(), parser.arg1(), parser.arg2())
+        code_writer.close()
 main()
