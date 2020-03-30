@@ -1,6 +1,6 @@
 #vmtranslator for Hack language
 #Usage: python vmtranslator.py [directory|filename]
-#Output: directory\[directory|filename].asm
+#Output: directory\[directory|filename].asm 
 DEBUG = 1
 import sys
 import os
